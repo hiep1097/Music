@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ import com.hktstudio.music.R;
 import com.hktstudio.music.adapters.AdapterViewPagerMain;
 import com.hktstudio.music.controls.Control;
 import com.hktstudio.music.defines.Define;
+import com.hktstudio.music.fragments.FragmentDetailAlbum;
+import com.hktstudio.music.fragments.FragmentSong;
 import com.hktstudio.music.models.Album;
 import com.hktstudio.music.models.Artist;
 import com.hktstudio.music.models.Song;
@@ -36,16 +39,16 @@ import java.util.List;
 import static com.hktstudio.music.service.MusicService.getPos;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-    ViewPager viewPager;
-    TabLayout tabLayout;
-    FragmentManager fragmentManager;
+    public static ViewPager viewPager;
+    public static TabLayout tabLayout;
+    public static FragmentManager fragmentManager;
     public static ImageView image_Song;
     public static TextView tv_Song, tv_Artist;
     public static ImageButton bt_Previous, bt_Play, bt_Next;
     public static List<Song> listSong = new ArrayList<>();
     public static List<Album> listAlbum = new ArrayList<>();
     public static List<Artist> listArtist = new ArrayList<>();
-    LinearLayout bottomBar;
+    public static LinearLayout bottomBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addPermission();
         Intent intent = new Intent(this,MusicService.class);
         startService(intent);
+        MusicService.list = listSong;
     }
     public void setControl(){
         viewPager = findViewById(R.id.viewPager);
@@ -63,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragmentManager = getSupportFragmentManager();
         AdapterViewPagerMain adapterViewPager = new AdapterViewPagerMain(fragmentManager);
         viewPager.setAdapter(adapterViewPager);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(1);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setTabsFromPagerAdapter(adapterViewPager);
@@ -81,11 +85,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         updateUI();
     }
 
+    public static void addFragmentDetailAlbum(Bundle bundle){
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        FragmentDetailAlbum fragmentDetailAlbum = new FragmentDetailAlbum();
+        fragmentDetailAlbum.setArguments(bundle);
+        transaction.add(R.id.placeHolder,fragmentDetailAlbum);
+        transaction.addToBackStack("album");
+        transaction.commit();
+    }
+
     public static void updateUI(){
         try {
-            image_Song.setImageDrawable(Drawable.createFromPath(listSong.get(getPos()).getAlbum_art()));
-            tv_Song.setText(listSong.get(getPos()).getName());
-            tv_Artist.setText(listSong.get(getPos()).getArtist());
+            image_Song.setImageDrawable(Drawable.createFromPath(MusicService.list.get(getPos()).getAlbum_art()));
+            tv_Song.setText(MusicService.list.get(getPos()).getName());
+            tv_Artist.setText(MusicService.list.get(getPos()).getArtist());
         } catch (IndexOutOfBoundsException e){
 
         }
@@ -196,7 +209,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             Artist artists = new Artist(id, album_art, artist, num_of_albums, num_of_songs);
             list.add(artists);
-
         }
         return list;
     }

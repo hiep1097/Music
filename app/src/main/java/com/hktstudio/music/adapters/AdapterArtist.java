@@ -2,6 +2,7 @@ package com.hktstudio.music.adapters;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;

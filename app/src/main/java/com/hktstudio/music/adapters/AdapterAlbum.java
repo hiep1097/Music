@@ -2,8 +2,8 @@ package com.hktstudio.music.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hktstudio.music.R;
-import com.hktstudio.music.defines.Define;
+import com.hktstudio.music.activities.MainActivity;
+import com.hktstudio.music.fragments.FragmentDetailAlbum;
 import com.hktstudio.music.models.Album;
-import com.hktstudio.music.models.Song;
-import com.hktstudio.music.service.MusicService;
 
 import java.util.List;
-
-import static com.hktstudio.music.service.MusicService.setPos;
 
 /**
  * Created by HOANG on 3/30/2018.
@@ -50,6 +47,17 @@ public class AdapterAlbum extends RecyclerView.Adapter<AdapterAlbum.ViewHolder>{
         holder.tv_Album.setText(list.get(position).getAlbum());
         holder.tv_Artist.setText(list.get(position).getArtist());
         holder.tv_Count.setText(list.get(position).getNumber_of_songs());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("albumID",list.get(position).getId());
+                bundle.putString("image_Album",list.get(position).getAlbum_art());
+                bundle.putString("tv_Album",list.get(position).getAlbum());
+                bundle.putString("tv_Artist",list.get(position).getArtist());
+                MainActivity.addFragmentDetailAlbum(bundle);
+            }
+        });
     }
 
     @Override

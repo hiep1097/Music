@@ -8,6 +8,7 @@ import android.util.Log;
 import com.hktstudio.music.R;
 import com.hktstudio.music.activities.PlaySongActivity;
 import com.hktstudio.music.adapters.AdapterSong;
+import com.hktstudio.music.adapters.AdapterSongForAlbum;
 import com.hktstudio.music.service.MusicService;
 import java.io.IOException;
 import static com.hktstudio.music.activities.MainActivity.bt_Play;
@@ -57,7 +58,20 @@ public class Control {
             PlaySongActivity.viewPager.setCurrentItem(pos, false);
         } catch (NullPointerException e) {
         }
-        AdapterSong.setCurrentPos(pos);
+        if (MusicService.FLAG_LIST_FROM == 0) {
+            AdapterSong.setCurrentPos(pos);
+            boolean ok = false; //ok: list song for album co bai dang phat cua list song main
+            for (int i=0;i<AdapterSongForAlbum.listPos.size();i++)
+                if (AdapterSongForAlbum.listPos.get(i)==pos) {
+                    AdapterSongForAlbum.setCurrentPos(i);
+                    ok = true;
+                }
+            if (!ok) AdapterSongForAlbum.setCurrentPos(-1);
+        }
+        else if (MusicService.FLAG_LIST_FROM == 1){
+            AdapterSongForAlbum.setCurrentPos(pos);
+            AdapterSong.setCurrentPos(AdapterSongForAlbum.listPos.get(pos));
+        }
     }
 
     public static void start(Context context) {
@@ -143,7 +157,20 @@ public class Control {
             PlaySongActivity.viewPager.setCurrentItem(pos, false);
         } catch (NullPointerException e) {
         }
-        AdapterSong.setCurrentPos(pos);
+        if (MusicService.FLAG_LIST_FROM == 0) {
+            AdapterSong.setCurrentPos(pos);
+            boolean ok = false; //ok: list song for album co bai dang phat cua list song main
+            for (int i=0;i<AdapterSongForAlbum.listPos.size();i++)
+                if (AdapterSongForAlbum.listPos.get(i)==pos) {
+                    AdapterSongForAlbum.setCurrentPos(i);
+                    ok = true;
+                }
+            if (!ok) AdapterSongForAlbum.setCurrentPos(-1);
+        }
+        else if (MusicService.FLAG_LIST_FROM == 1){
+            AdapterSongForAlbum.setCurrentPos(pos);
+            AdapterSong.setCurrentPos(AdapterSongForAlbum.listPos.get(pos));
+        }
     }
 
     public static void exit(Context context) {

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.hktstudio.music.R;
 import com.hktstudio.music.adapters.AdapterViewPagerPlaySong;
 import com.hktstudio.music.defines.Define;
+import com.hktstudio.music.fragments.FragmentSong;
 import com.hktstudio.music.models.Song;
 import com.hktstudio.music.service.MusicService;
 import java.lang.reflect.Field;
@@ -48,7 +49,7 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_song);
         instance = this;
-        list = MainActivity.getListSongs(this);
+        list = MusicService.list;
         viewPager = findViewById(R.id.viewPager);
         adapter = new AdapterViewPagerPlaySong(this,list);
         viewPager.setAdapter(adapter);

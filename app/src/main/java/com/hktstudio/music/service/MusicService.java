@@ -35,12 +35,13 @@ import static com.hktstudio.music.activities.MainActivity.updateUI;
 public class MusicService extends Service{
     public static MusicService instance;
     public static int pos = 0;
-    public static List<Song> list = MainActivity.listSong;
+    public static List<Song> list;
     public static MediaPlayer mediaPlayer;
     public static NotificationManager manager;
     public static NotificationCompat.Builder builder;
     public static Notification notification;
     public static RemoteViews contentView;
+    public static int FLAG_LIST_FROM = 0; //0: from fragment song, 1: from fragment song for album, 2: from fragment song for artist
     @Override
     public void onCreate() {
         super.onCreate();
