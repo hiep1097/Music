@@ -27,7 +27,7 @@ import java.util.List;
 public class FragmentDetailAlbum extends Fragment{
     public static ImageView image_Album;
     public static TextView tv_Album, tv_Artist;
-    public static RecyclerView rcv_AlbumList;
+    public static RecyclerView rcv_SongForAlbum;
     public static AdapterSongForAlbum adapterSongForAlbum;
     public static List<Song> list;
     public static List<Integer> listPos = new ArrayList<>();
@@ -42,16 +42,16 @@ public class FragmentDetailAlbum extends Fragment{
         image_Album.setImageDrawable(Drawable.createFromPath(bundle.getString("image_Album")));
         tv_Album.setText(bundle.getString("tv_Album"));
         tv_Artist.setText(bundle.getString("tv_Artist"));
-        rcv_AlbumList = view.findViewById(R.id.rcv_AlbumList);
+        rcv_SongForAlbum = view.findViewById(R.id.rcv_SongForAlbum);
         listPos = new ArrayList<>();
         list = getList(bundle.getString("albumID"));
         adapterSongForAlbum = new AdapterSongForAlbum(getContext(),list,listPos);
-        rcv_AlbumList.setAdapter(adapterSongForAlbum);
-        rcv_AlbumList.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        rcv_SongForAlbum.setAdapter(adapterSongForAlbum);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         layoutManager.setAutoMeasureEnabled(true);
-        rcv_AlbumList.setLayoutManager(layoutManager);
-        rcv_AlbumList.setNestedScrollingEnabled(false);
+        rcv_SongForAlbum.setLayoutManager(layoutManager);
+        rcv_SongForAlbum.setNestedScrollingEnabled(false);
+        rcv_SongForAlbum.setLayoutManager(layoutManager);
         return view;
     }
 
@@ -68,10 +68,5 @@ public class FragmentDetailAlbum extends Fragment{
 
         }
         return list;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 }

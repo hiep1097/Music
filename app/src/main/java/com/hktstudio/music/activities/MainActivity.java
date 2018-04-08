@@ -27,6 +27,7 @@ import com.hktstudio.music.adapters.AdapterViewPagerMain;
 import com.hktstudio.music.controls.Control;
 import com.hktstudio.music.defines.Define;
 import com.hktstudio.music.fragments.FragmentDetailAlbum;
+import com.hktstudio.music.fragments.FragmentDetailArtist;
 import com.hktstudio.music.fragments.FragmentSong;
 import com.hktstudio.music.models.Album;
 import com.hktstudio.music.models.Artist;
@@ -94,6 +95,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         transaction.commit();
     }
 
+    public static void addFragmentDetailArtist(Bundle bundle){
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        FragmentDetailArtist fragmentDetailArtist = new FragmentDetailArtist();
+        fragmentDetailArtist.setArguments(bundle);
+        transaction.add(R.id.placeHolder,fragmentDetailArtist);
+        transaction.addToBackStack("artist");
+        transaction.commit();
+    }
+
     public static void updateUI(){
         try {
             image_Song.setImageDrawable(Drawable.createFromPath(MusicService.list.get(getPos()).getAlbum_art()));
@@ -116,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 MediaStore.Audio.Media.ALBUM,
                 MediaStore.Audio.Media.ALBUM_ID,
                 MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ARTIST_ID,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.DATA};
 
@@ -125,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
 
-            String id, name, title, album, album_id, artist, path, album_art="";
+            String id, name, title, album, album_id, artist, artist_id, path, album_art="";
             int duration;
             id = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
             name = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME));
@@ -133,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             album = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM));
             album_id = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
             artist = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
+            artist_id = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST_ID));
             duration = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
             path = c.getString(c.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA));
             Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
@@ -143,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (cursor.moveToFirst()) {
                 album_art = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
             }
-            Song song = new Song(id, name, title, album, album_id, artist, path, duration,album_art);
+            Song song = new Song(id, name, title, album, album_id, artist,artist_id, path, album_art, duration);
             mListSongs.add(song);
 
         }

@@ -9,6 +9,7 @@ import com.hktstudio.music.R;
 import com.hktstudio.music.activities.PlaySongActivity;
 import com.hktstudio.music.adapters.AdapterSong;
 import com.hktstudio.music.adapters.AdapterSongForAlbum;
+import com.hktstudio.music.adapters.AdapterSongForArtist;
 import com.hktstudio.music.service.MusicService;
 import java.io.IOException;
 import static com.hktstudio.music.activities.MainActivity.bt_Play;
@@ -58,20 +59,7 @@ public class Control {
             PlaySongActivity.viewPager.setCurrentItem(pos, false);
         } catch (NullPointerException e) {
         }
-        if (MusicService.FLAG_LIST_FROM == 0) {
-            AdapterSong.setCurrentPos(pos);
-            boolean ok = false; //ok: list song for album co bai dang phat cua list song main
-            for (int i=0;i<AdapterSongForAlbum.listPos.size();i++)
-                if (AdapterSongForAlbum.listPos.get(i)==pos) {
-                    AdapterSongForAlbum.setCurrentPos(i);
-                    ok = true;
-                }
-            if (!ok) AdapterSongForAlbum.setCurrentPos(-1);
-        }
-        else if (MusicService.FLAG_LIST_FROM == 1){
-            AdapterSongForAlbum.setCurrentPos(pos);
-            AdapterSong.setCurrentPos(AdapterSongForAlbum.listPos.get(pos));
-        }
+        setPos();
     }
 
     public static void start(Context context) {
@@ -96,7 +84,9 @@ public class Control {
         try {
             PlaySongActivity.updateUI();
         } catch (NullPointerException e) {
+        } catch (IndexOutOfBoundsException e){
         }
+        setPos();
     }
 
     public static void play(Context context) {
@@ -123,6 +113,7 @@ public class Control {
             }
             mediaPlayer.start();
         }
+        setPos();
     }
 
     public static void next(Context context) {
@@ -157,19 +148,64 @@ public class Control {
             PlaySongActivity.viewPager.setCurrentItem(pos, false);
         } catch (NullPointerException e) {
         }
+        setPos();
+    }
+
+    public static void setPos(){
         if (MusicService.FLAG_LIST_FROM == 0) {
             AdapterSong.setCurrentPos(pos);
             boolean ok = false; //ok: list song for album co bai dang phat cua list song main
-            for (int i=0;i<AdapterSongForAlbum.listPos.size();i++)
-                if (AdapterSongForAlbum.listPos.get(i)==pos) {
-                    AdapterSongForAlbum.setCurrentPos(i);
-                    ok = true;
-                }
-            if (!ok) AdapterSongForAlbum.setCurrentPos(-1);
-        }
-        else if (MusicService.FLAG_LIST_FROM == 1){
+            try{
+                for (int i=0;i<AdapterSongForAlbum.listPos.size();i++)
+                    if (AdapterSongForAlbum.listPos.get(i)==pos) {
+                        AdapterSongForAlbum.setCurrentPos(i);
+                        ok = true;
+                        break;
+                    }
+                if (!ok) AdapterSongForAlbum.setCurrentPos(-1);
+            } catch (NullPointerException e){
+            }
+
+            try {
+                boolean ok1 = false; //ok1: list song for album co bai dang phat cua list song main
+                for (int i=0;i<AdapterSongForArtist.listPos.size();i++)
+                    if (AdapterSongForArtist.listPos.get(i)==pos) {
+                        AdapterSongForArtist.setCurrentPos(i);
+                        ok1 = true;
+                        break;
+                    }
+                if (!ok1) AdapterSongForArtist.setCurrentPos(-1);
+            } catch (NullPointerException e){
+            }
+        } else if (MusicService.FLAG_LIST_FROM == 1){
             AdapterSongForAlbum.setCurrentPos(pos);
             AdapterSong.setCurrentPos(AdapterSongForAlbum.listPos.get(pos));
+            try {
+                boolean ok = false; //ok: list song for artist co bai dang phat cua list song for album
+                for (int i=0;i<AdapterSongForArtist.listPos.size();i++)
+                    if (AdapterSongForArtist.listPos.get(i)==AdapterSongForAlbum.listPos.get(pos)) {
+                        AdapterSongForArtist.setCurrentPos(i);
+                        ok = true;
+                        break;
+                    }
+                if (!ok) AdapterSongForArtist.setCurrentPos(-1);
+            } catch (NullPointerException e){
+            }
+
+        } else if (MusicService.FLAG_LIST_FROM == 2){
+            AdapterSongForArtist.setCurrentPos(pos);
+            AdapterSong.setCurrentPos(AdapterSongForArtist.listPos.get(pos));
+            try {
+                boolean ok = false; //ok: list song for album co bai dang phat cua list song for artist
+                for (int i=0;i<AdapterSongForAlbum.listPos.size();i++)
+                    if (AdapterSongForAlbum.listPos.get(i)==AdapterSongForArtist.listPos.get(pos)) {
+                        AdapterSongForAlbum.setCurrentPos(i);
+                        ok = true;
+                        break;
+                    }
+                if (!ok) AdapterSongForAlbum.setCurrentPos(-1);
+            } catch (NullPointerException e){
+            }
         }
     }
 

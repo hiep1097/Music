@@ -2,6 +2,7 @@ package com.hktstudio.music.adapters;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hktstudio.music.R;
+import com.hktstudio.music.activities.MainActivity;
 import com.hktstudio.music.models.Album;
 import com.hktstudio.music.models.Artist;
 
@@ -45,6 +47,16 @@ public class AdapterArtist extends RecyclerView.Adapter<AdapterArtist.ViewHolder
         holder.tv_Artist.setText(list.get(position).getArtist());
         holder.tv_NumOfAlbums.setText(list.get(position).getNum_of_albums());
         holder.tv_NumOfSongs.setText(list.get(position).getNum_of_songs());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("artistID",list.get(position).getId());
+                bundle.putString("image_Artist",list.get(position).getAlbum_art());
+                bundle.putString("tv_Artist",list.get(position).getArtist());
+                MainActivity.addFragmentDetailArtist(bundle);
+            }
+        });
     }
 
     @Override
