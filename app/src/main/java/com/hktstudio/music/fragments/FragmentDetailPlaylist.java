@@ -33,7 +33,6 @@ public class FragmentDetailPlaylist extends Fragment {
     public static RecyclerView rcv_SongForPlaylist;
     public static AdapterSongForPlaylist adapterSongForPlaylist;
     public static List<Song> list;
-    public static List<Integer> listPos = new ArrayList<>();
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,9 +44,8 @@ public class FragmentDetailPlaylist extends Fragment {
         tv_Playlist.setText(bundle.getString("tv_Playlist"));
         tv_Count.setText(bundle.getInt("tv_Count")+" bài hát");
         rcv_SongForPlaylist = view.findViewById(R.id.rcv_SongForPlaylist);
-        listPos = new ArrayList<>();
         list = getListSongForPlaylist(bundle.getLong("playlistID"));
-        adapterSongForPlaylist = new AdapterSongForPlaylist(getContext(),list,listPos);
+        adapterSongForPlaylist = new AdapterSongForPlaylist(getContext(),list);
         rcv_SongForPlaylist.setAdapter(adapterSongForPlaylist);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         layoutManager.setAutoMeasureEnabled(true);

@@ -33,7 +33,7 @@ import static com.hktstudio.music.service.MusicService.setPos;
  */
 
 public class AdapterSong extends RecyclerView.Adapter<AdapterSong.ViewHolder>{
-    List<Song> list;
+    public static List<Song> list;
     Context context;
     LayoutInflater inflater;
     public static int pos = FragmentSong.pos;
@@ -65,7 +65,7 @@ public class AdapterSong extends RecyclerView.Adapter<AdapterSong.ViewHolder>{
         holder.image_Song.setImageDrawable(Drawable.createFromPath(list.get(position).getAlbum_art()));
         holder.tv_Song.setText(list.get(position).getName());
         holder.tv_Artist.setText(list.get(position).getArtist());
-        if (pos == position){
+        if (list.get(position).getId().compareTo(MusicService.list.get(MusicService.pos).getId())==0){
             holder.tv_Song.setTextColor(Color.MAGENTA);
             holder.tv_Artist.setTextColor(Color.MAGENTA);
         } else {
@@ -79,7 +79,6 @@ public class AdapterSong extends RecyclerView.Adapter<AdapterSong.ViewHolder>{
                 notifyDataSetChanged();
                 setPos(position);
                 MusicService.list = list;
-                MusicService.FLAG_LIST_FROM = 0;
                 Intent intent = new Intent(context, MusicService.class);
                 intent.setAction(Define.actStart);
                 context.startService(intent);

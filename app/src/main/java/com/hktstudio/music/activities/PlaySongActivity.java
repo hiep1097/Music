@@ -27,6 +27,7 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import static com.hktstudio.music.service.MusicService.getPos;
+import static com.hktstudio.music.service.MusicService.list;
 import static com.hktstudio.music.service.MusicService.mediaPlayer;
 import static com.hktstudio.music.service.MusicService.setMediaPlayer;
 
@@ -38,18 +39,18 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
     public static PlaySongActivity instance;
     public static TextView tv_Begin, tv_End;
     public static ImageButton bt_Previous, bt_Play, bt_Next;
-    public static List<Song> list;
     public static SeekBar seekBar;
     public static int duration;
     public static boolean complete = false;
     public static ViewPager viewPager;
     public static AdapterViewPagerPlaySong adapter;
+    public static int FLAG_ALIVE;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        FLAG_ALIVE = 1;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_song);
         instance = this;
-        list = MusicService.list;
         viewPager = findViewById(R.id.viewPager);
         adapter = new AdapterViewPagerPlaySong(this,list);
         viewPager.setAdapter(adapter);
@@ -77,6 +78,12 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
         }
         if (isPlaying) bt_Play.setImageResource(R.drawable.ic_pause_white);
         else bt_Play.setImageResource(R.drawable.ic_play_white);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FLAG_ALIVE = 0;
     }
 
     @Override

@@ -41,9 +41,6 @@ public class MusicService extends Service{
     public static NotificationCompat.Builder builder;
     public static Notification notification;
     public static RemoteViews contentView;
-    public static int FLAG_LIST_FROM = 0; //0: from fragment song, 1: from fragment song for album,
-    // 2: from fragment song for artist 3: from fragment song of playlist
-    @Override
     public void onCreate() {
         super.onCreate();
         instance = this;

@@ -40,7 +40,6 @@ public class FragmentDetailArtist extends Fragment {
     public static AdapterAlbum adapterAlbum;
     public static List<Song> listSong;
     public static List<Album> listAlbum;
-    public static List<Integer> listPos = new ArrayList<>();
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,11 +55,10 @@ public class FragmentDetailArtist extends Fragment {
         Bundle bundle = getArguments();
         image_Artist.setImageDrawable(Drawable.createFromPath(bundle.getString("image_Artist")));
         tv_Artist.setText(bundle.getString("tv_Artist"));
-        listPos = new ArrayList<>();
         listSong = getListSong(bundle.getString("artistID"));
         listAlbum = getListAlbum(bundle.getString("artistID"));
         adapterAlbum = new AdapterAlbum(getContext(),listAlbum);
-        adapterSongForArtist = new AdapterSongForArtist(getContext(),listSong,listPos);
+        adapterSongForArtist = new AdapterSongForArtist(getContext(),listSong);
         rcv_AlbumForArtist.setAdapter(adapterAlbum);
         rcv_SongForArtist.setAdapter(adapterSongForArtist);
         layoutManagerAlbum.setAutoMeasureEnabled(true);
@@ -77,10 +75,7 @@ public class FragmentDetailArtist extends Fragment {
                 if (MainActivity.listArtist.get(i).getId().compareTo(artistID)==0
                         && MainActivity.listArtist.get(i).getId().compareTo(MainActivity.listSong.get(j).getArtist_id())==0){
                     list.add(MainActivity.listSong.get(j));
-                    listPos.add(j);
-                    if (j== AdapterSong.getCurrentPos()) AdapterSongForArtist.setCurrentPos(listPos.size()-1);
                 }
-
         }
         return list;
     }

@@ -30,7 +30,6 @@ public class FragmentDetailAlbum extends Fragment{
     public static RecyclerView rcv_SongForAlbum;
     public static AdapterSongForAlbum adapterSongForAlbum;
     public static List<Song> list;
-    public static List<Integer> listPos = new ArrayList<>();
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -43,9 +42,8 @@ public class FragmentDetailAlbum extends Fragment{
         tv_Album.setText(bundle.getString("tv_Album"));
         tv_Artist.setText(bundle.getString("tv_Artist"));
         rcv_SongForAlbum = view.findViewById(R.id.rcv_SongForAlbum);
-        listPos = new ArrayList<>();
         list = getList(bundle.getString("albumID"));
-        adapterSongForAlbum = new AdapterSongForAlbum(getContext(),list,listPos);
+        adapterSongForAlbum = new AdapterSongForAlbum(getContext(),list);
         rcv_SongForAlbum.setAdapter(adapterSongForAlbum);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         layoutManager.setAutoMeasureEnabled(true);
@@ -62,10 +60,7 @@ public class FragmentDetailAlbum extends Fragment{
                 if (MainActivity.listAlbum.get(i).getId().compareTo(albumID)==0
                     && MainActivity.listAlbum.get(i).getId().compareTo(MainActivity.listSong.get(j).getAlbum_id())==0){
                     list.add(MainActivity.listSong.get(j));
-                    listPos.add(j);
-                    if (j==AdapterSong.getCurrentPos()) AdapterSongForAlbum.setCurrentPos(listPos.size()-1);
                 }
-
         }
         return list;
     }

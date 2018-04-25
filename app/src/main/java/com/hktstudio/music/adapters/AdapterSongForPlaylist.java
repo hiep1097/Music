@@ -25,17 +25,15 @@ import static com.hktstudio.music.service.MusicService.setPos;
  */
 
 public class AdapterSongForPlaylist extends RecyclerView.Adapter<AdapterSongForPlaylist.ViewHolder>{
-    List<Song> list;
-    public static List<Integer> listPos;
+    public static List<Song> list;
     Context context;
     LayoutInflater inflater;
     public static int pos = -1;
     public static AdapterSongForPlaylist instance;
-    public AdapterSongForPlaylist(Context context, List<Song> list, List<Integer> listPos) {
+    public AdapterSongForPlaylist(Context context, List<Song> list) {
         instance = this;
         this.context = context;
         this.list = list;
-        this.listPos = listPos;
         inflater = LayoutInflater.from(context);
     }
 
@@ -63,21 +61,19 @@ public class AdapterSongForPlaylist extends RecyclerView.Adapter<AdapterSongForP
         holder.image_Song.setImageDrawable(Drawable.createFromPath(list.get(position).getAlbum_art()));
         holder.tv_Song.setText(list.get(position).getName());
         holder.tv_Artist.setText(list.get(position).getArtist());
-//        if (pos == position && listPos.get(position)==AdapterSong.getCurrentPos()){
-//            holder.tv_Song.setTextColor(Color.MAGENTA);
-//            holder.tv_Artist.setTextColor(Color.MAGENTA);
-//        } else {
-//            holder.tv_Song.setTextColor(Color.BLACK);
-//            holder.tv_Artist.setTextColor(Color.BLACK);
-//        }
+        if (list.get(position).getId().compareTo(MusicService.list.get(MusicService.pos).getId())==0){
+            holder.tv_Song.setTextColor(Color.MAGENTA);
+            holder.tv_Artist.setTextColor(Color.MAGENTA);
+        } else {
+            holder.tv_Song.setTextColor(Color.BLACK);
+            holder.tv_Artist.setTextColor(Color.BLACK);
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 pos = position;
-                //AdapterSong.setCurrentPos(listPos.get(position));
                 notifyDataSetChanged();
                 setPos(position);
-                //MusicService.FLAG_LIST_FROM = 1;
                 MusicService.list = list;
                 Intent intent = new Intent(context, MusicService.class);
                 intent.setAction(Define.actStart);
