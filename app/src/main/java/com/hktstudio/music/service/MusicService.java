@@ -41,7 +41,8 @@ public class MusicService extends Service{
     public static NotificationCompat.Builder builder;
     public static Notification notification;
     public static RemoteViews contentView;
-    public static int FLAG_LIST_FROM = 0; //0: from fragment song, 1: from fragment song for album, 2: from fragment song for artist
+    public static int FLAG_LIST_FROM = 0; //0: from fragment song, 1: from fragment song for album,
+    // 2: from fragment song for artist 3: from fragment song of playlist
     @Override
     public void onCreate() {
         super.onCreate();
@@ -61,9 +62,6 @@ public class MusicService extends Service{
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this,"start service",Toast.LENGTH_SHORT).show();
         try{
-//            Intent intent1 = new Intent();
-//            intent1.setAction(intent.getAction());
-//            sendBroadcast(intent1);
             if (intent.getAction().compareTo(Define.actPrevious)==0){
                 Toast.makeText(this,"previous",Toast.LENGTH_SHORT).show();
                 Control.previous(this);

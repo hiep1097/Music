@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.hktstudio.music.fragments.FragmentAlbum;
 import com.hktstudio.music.fragments.FragmentArtist;
+import com.hktstudio.music.fragments.FragmentPlaylist;
 import com.hktstudio.music.fragments.FragmentSong;
 
 /**
@@ -31,13 +32,16 @@ public class AdapterViewPagerMain extends FragmentStatePagerAdapter {
             case 2:
                 fragment = new FragmentArtist();
                 break;
+            case 3:
+                fragment = new FragmentPlaylist();
+                break;
         }
         return fragment;
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -52,6 +56,9 @@ public class AdapterViewPagerMain extends FragmentStatePagerAdapter {
                 break;
             case 2:
                 title = "Artist";
+                break;
+            case 3:
+                title = "Playlist";
                 break;
         }
         return title;

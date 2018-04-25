@@ -25,12 +25,18 @@ import android.widget.Toast;
 import com.hktstudio.music.R;
 import com.hktstudio.music.adapters.AdapterViewPagerMain;
 import com.hktstudio.music.controls.Control;
+import com.hktstudio.music.dataloaders.AlbumLoader;
+import com.hktstudio.music.dataloaders.ArtistLoader;
+import com.hktstudio.music.dataloaders.PlaylistLoader;
+import com.hktstudio.music.dataloaders.SongLoader;
 import com.hktstudio.music.defines.Define;
 import com.hktstudio.music.fragments.FragmentDetailAlbum;
 import com.hktstudio.music.fragments.FragmentDetailArtist;
+import com.hktstudio.music.fragments.FragmentDetailPlaylist;
 import com.hktstudio.music.fragments.FragmentSong;
 import com.hktstudio.music.models.Album;
 import com.hktstudio.music.models.Artist;
+import com.hktstudio.music.models.Playlist;
 import com.hktstudio.music.models.Song;
 import com.hktstudio.music.service.MusicService;
 
@@ -49,14 +55,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static List<Song> listSong = new ArrayList<>();
     public static List<Album> listAlbum = new ArrayList<>();
     public static List<Artist> listArtist = new ArrayList<>();
+    public static List<Playlist> playList = new ArrayList<>();
     public static LinearLayout bottomBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listSong = getListSongs(this);
-        listAlbum = getListAlbums(this);
-        listArtist = getListArtist(this);
+        listSong = SongLoader.getListSongs(this);
+        listAlbum = AlbumLoader.getListAlbums(this);
+        listArtist = ArtistLoader.getListArtist(this);
+        playList = PlaylistLoader.getPlaylist(this);
         addPermission();
         Intent intent = new Intent(this,MusicService.class);
         startService(intent);
@@ -104,6 +112,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         transaction.commit();
     }
 
+    public static void addFragmentDetailPlaylist(Bundle bundle){
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        FragmentDetailPlaylist fragmentDetailPlaylist = new FragmentDetailPlaylist();
+        fragmentDetailPlaylist.setArguments(bundle);
+        transaction.add(R.id.placeHolder,fragmentDetailPlaylist);
+        transaction.addToBackStack("playlist");
+        transaction.commit();
+    }
+
     public static void updateUI(){
         try {
             image_Song.setImageDrawable(Drawable.createFromPath(MusicService.list.get(getPos()).getAlbum_art()));
@@ -113,116 +130,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
-    }
-
-    public static List getListSongs(Context context) {
-        List mListSongs = new ArrayList();
-        Uri uri;
-        uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-
-        String[] m_data = {MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.DISPLAY_NAME,
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.ALBUM,
-                MediaStore.Audio.Media.ALBUM_ID,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.ARTIST_ID,
-                MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.DATA};
-
-        Cursor c = context.getContentResolver().query(
-                uri, m_data, MediaStore.Audio.Media.IS_MUSIC + "=1", null,
-                MediaStore.Audio.Media.TITLE + " ASC");
-
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-
-            String id, name, title, album, album_id, artist, artist_id, path, album_art="";
-            int duration;
-            id = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
-            name = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME));
-            title = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
-            album = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM));
-            album_id = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
-            artist = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
-            artist_id = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST_ID));
-            duration = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
-            path = c.getString(c.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA));
-            Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-                    new String[] {MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART},
-                    MediaStore.Audio.Albums._ID+ "=?",
-                    new String[] {String.valueOf(album_id)},
-                    null);
-            if (cursor.moveToFirst()) {
-                album_art = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
-            }
-            Song song = new Song(id, name, title, album, album_id, artist,artist_id, path, album_art, duration);
-            mListSongs.add(song);
-
-        }
-        return mListSongs;
-    }
-
-    public static List getListAlbums(Context context){
-        List<Album> list = new ArrayList<>();
-        Uri uri;
-        uri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
-
-        String[] m_data = {MediaStore.Audio.Albums._ID,
-                MediaStore.Audio.Albums.ALBUM,
-                MediaStore.Audio.Albums.ALBUM_ART,
-                MediaStore.Audio.Albums.ARTIST,
-                MediaStore.Audio.Albums.NUMBER_OF_SONGS,
-                };
-
-        Cursor c = context.getContentResolver().query(
-                uri, m_data, null, null, MediaStore.Audio.Albums._ID+" ASC");
-
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            String id, album, album_art, artist, number_of_songs;
-            id = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Albums._ID));
-            album = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Albums.ALBUM));
-            album_art = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Albums.ALBUM_ART));
-            artist = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Albums.ARTIST));
-            number_of_songs = " ("+c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Albums.NUMBER_OF_SONGS))+")";
-            Album albums = new Album(id, album, album_art, artist, number_of_songs);
-            list.add(albums);
-
-        }
-        return list;
-    }
-
-    public static List getListArtist(Context context){
-        List<Artist> list = new ArrayList<>();
-        Uri uri;
-        uri = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
-
-        String[] m_data = {MediaStore.Audio.Artists._ID,
-                MediaStore.Audio.Artists.ARTIST,
-                MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
-                MediaStore.Audio.Artists.NUMBER_OF_TRACKS
-        };
-
-        Cursor c = context.getContentResolver().query(
-                uri, m_data, null, null, MediaStore.Audio.Artists._ID+" ASC");
-
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            String id, album_art=null, artist, num_of_songs, num_of_albums;
-            id = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Artists._ID));
-            artist = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Artists.ARTIST));
-            num_of_albums = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS))+" album";
-            num_of_songs = " "+c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Artists.NUMBER_OF_TRACKS))+" bài hát";
-            Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-                    new String[] {MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM_ART},
-                    MediaStore.Audio.Albums.ARTIST+ "=?",
-                    new String[] {artist},
-                    null);
-            if (cursor.moveToFirst()) {
-                album_art = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
-            }
-            Artist artists = new Artist(id, album_art, artist, num_of_albums, num_of_songs);
-            list.add(artists);
-        }
-        return list;
     }
 
     void addPermission() {
