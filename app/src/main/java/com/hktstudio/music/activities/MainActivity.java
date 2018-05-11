@@ -61,16 +61,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        addPermission();
+    }
+    public void setControl(){
         listSong = SongLoader.getListSongs(this);
         listAlbum = AlbumLoader.getListAlbums(this);
         listArtist = ArtistLoader.getListArtist(this);
         playList = PlaylistLoader.getPlaylist(this);
-        addPermission();
         Intent intent = new Intent(this,MusicService.class);
         startService(intent);
         MusicService.list = listSong;
-    }
-    public void setControl(){
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
         fragmentManager = getSupportFragmentManager();
