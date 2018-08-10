@@ -1,21 +1,27 @@
 package com.hktstudio.music.service;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.hktstudio.music.R;
+import com.hktstudio.music.SwitchButtonListener;
 import com.hktstudio.music.activities.MainActivity;
 import com.hktstudio.music.activities.PlaySongActivity;
 import com.hktstudio.music.controls.Control;
@@ -38,12 +44,16 @@ public class MusicService extends Service{
     public static List<Song> list;
     public static MediaPlayer mediaPlayer;
     public static NotificationManager manager;
+    public static NotificationManagerCompat mNotificationManager;
     public static NotificationCompat.Builder builder;
     public static Notification notification;
     public static RemoteViews contentView;
+    public static final String CHANNEL_ID = "1234";
     public void onCreate() {
         super.onCreate();
         instance = this;
+        mNotificationManager = NotificationManagerCompat.from(this);
+        createNotificationChannel();
     }
 
     public static void initMedia(Context context) {
@@ -88,8 +98,7 @@ public class MusicService extends Service{
     }
 
     public static void newNotification(Context context) {
-        manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-        builder = new NotificationCompat.Builder(context, "1234");
+        builder = new NotificationCompat.Builder(context, CHANNEL_ID);
         builder.setContentTitle("My Music");
         builder.setContentText("thông báo abcd");
         builder.setSmallIcon(R.drawable.ic_music_default);
@@ -101,6 +110,10 @@ public class MusicService extends Service{
         Intent iNext = new Intent(Define.actNext);
         Intent iPlay = new Intent(Define.actPlay);
         Intent iExit = new Intent(Define.actExit);
+        iPrevious.setClass(context, SwitchButtonListener.class);
+        iNext.setClass(context, SwitchButtonListener.class);
+        iPlay.setClass(context, SwitchButtonListener.class);
+        iExit.setClass(context, SwitchButtonListener.class);
         PendingIntent pPrevious = PendingIntent.getBroadcast(context, 0, iPrevious, 0);
         PendingIntent pNext = PendingIntent.getBroadcast(context, 0, iNext, 0);
         PendingIntent pPlay = PendingIntent.getBroadcast(context, 0, iPlay, 0);
@@ -111,6 +124,16 @@ public class MusicService extends Service{
         contentView.setOnClickPendingIntent(R.id.bt_Exit, pExit);
         notification = builder.build();
         MusicService.instance.startForeground(1, notification);
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Music";
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            manager.createNotificationChannel(mChannel);
+        }
     }
 
     public static void updateNotification() {
@@ -124,7 +147,7 @@ public class MusicService extends Service{
         if (uri != null)
             contentView.setImageViewUri(R.id.image_Song, uri);
         else contentView.setImageViewResource(R.id.image_Song, R.drawable.ic_music_default);
-        manager.notify(1, notification);
+        mNotificationManager.notify(1, notification);
     }
     public static MediaPlayer getMediaPlayer() {
         return mediaPlayer;

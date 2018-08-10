@@ -207,7 +207,7 @@ public class Control {
 
     public static void exit(Context context) {
         MusicService.instance.stopForeground(true);
-        MusicService.manager.cancel(1);
+        MusicService.mNotificationManager.cancel(1);
         System.exit(1);
     }
 

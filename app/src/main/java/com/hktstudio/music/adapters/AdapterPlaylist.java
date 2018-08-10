@@ -9,13 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hktstudio.music.R;
 import com.hktstudio.music.activities.MainActivity;
 import com.hktstudio.music.models.Album;
 import com.hktstudio.music.models.Playlist;
+import com.hktstudio.music.widgets.MusicPlayer;
 
 import java.util.List;
+
+import static com.hktstudio.music.widgets.MusicPlayer.updatePlaylist;
 
 /**
  * Created by HOANG on 4/10/2018.
@@ -52,6 +56,15 @@ public class AdapterPlaylist extends RecyclerView.Adapter<AdapterPlaylist.ViewHo
                 bundle.putString("tv_Playlist",list.get(position).getName());
                 bundle.putInt("tv_Count",list.get(position).getSongCount());
                 MainActivity.addFragmentDetailPlaylist(bundle);
+            }
+        });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                MusicPlayer.deletePlaylist(context,list.get(position).getName());
+                updatePlaylist();
+                Toast.makeText(context,"Đã xóa playlist",Toast.LENGTH_SHORT).show();
+                return false;
             }
         });
     }

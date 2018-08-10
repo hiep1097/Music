@@ -46,6 +46,7 @@ import java.util.List;
 import static com.hktstudio.music.service.MusicService.getPos;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+    public static MainActivity instance;
     public static ViewPager viewPager;
     public static TabLayout tabLayout;
     public static FragmentManager fragmentManager;
@@ -61,13 +62,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        instance = this;
         addPermission();
     }
+
+    public static void updateList(){
+        listSong = SongLoader.getListSongs(instance);
+        listAlbum = AlbumLoader.getListAlbums(instance);
+        listArtist = ArtistLoader.getListArtist(instance);
+        playList = PlaylistLoader.getPlaylist(instance);
+    }
+
     public void setControl(){
-        listSong = SongLoader.getListSongs(this);
-        listAlbum = AlbumLoader.getListAlbums(this);
-        listArtist = ArtistLoader.getListArtist(this);
-        playList = PlaylistLoader.getPlaylist(this);
+        updateList();
         Intent intent = new Intent(this,MusicService.class);
         startService(intent);
         MusicService.list = listSong;
@@ -129,7 +136,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (IndexOutOfBoundsException e){
 
         }
-
     }
 
     void addPermission() {
@@ -153,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                 }
+
                 return;
             }
 

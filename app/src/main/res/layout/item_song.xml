@@ -1,14 +1,31 @@
 <RelativeLayout
+    android:id="@+id/relativeLayout"
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_margin="@dimen/_5sdp"
     >
+    <LinearLayout
+        android:id="@+id/lnCheck"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_60sdp"
+        android:gravity="center"
+        android:visibility="gone"
+        >
+        <CheckBox
+            android:id="@+id/rdbCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            />
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/image_Song"
         android:layout_width="@dimen/_60sdp"
         android:layout_height="@dimen/_60sdp"
         android:background="@drawable/ic_music_default"
+        android:layout_toRightOf="@+id/lnCheck"
         />
     <LinearLayout
         android:layout_width="wrap_content"

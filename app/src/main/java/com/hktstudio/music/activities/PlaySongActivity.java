@@ -18,6 +18,7 @@ import android.widget.Scroller;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.hktstudio.music.R;
+import com.hktstudio.music.SwitchButtonListener;
 import com.hktstudio.music.adapters.AdapterViewPagerPlaySong;
 import com.hktstudio.music.defines.Define;
 import com.hktstudio.music.fragments.FragmentSong;
@@ -162,6 +163,7 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
                         complete = true;
                         Intent intent = new Intent();
                         intent.setAction(Define.actNext);
+                        intent.setClass(instance,SwitchButtonListener.class);
                         instance.sendBroadcast(intent);
                     }
                 });

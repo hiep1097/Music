@@ -23,7 +23,7 @@ public class AdapterViewPagerMain extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         Fragment fragment = null;
         switch (position){
-            case 0:
+            case 3:
                 fragment = new FragmentSong();
                 break;
             case 1:
@@ -32,7 +32,7 @@ public class AdapterViewPagerMain extends FragmentStatePagerAdapter {
             case 2:
                 fragment = new FragmentArtist();
                 break;
-            case 3:
+            case 0:
                 fragment = new FragmentPlaylist();
                 break;
         }
@@ -49,7 +49,7 @@ public class AdapterViewPagerMain extends FragmentStatePagerAdapter {
         String title = "";
         switch (position){
             case 0:
-                title = "Song";
+                title = "Playlist";
                 break;
             case 1:
                 title = "Album";
@@ -58,7 +58,7 @@ public class AdapterViewPagerMain extends FragmentStatePagerAdapter {
                 title = "Artist";
                 break;
             case 3:
-                title = "Playlist";
+                title = "Song";
                 break;
         }
         return title;
